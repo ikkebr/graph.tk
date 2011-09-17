@@ -1,6 +1,6 @@
 CACHE MANIFEST
-min/e974eb8.js
-min/e974eb8.css
+min/51b2051.js
+min/51b2051.css
 grabbing.gif
 buttons.png
 sw.png
@@ -8,6 +8,7 @@ favicon.ico
 font/Symbola.ttf
 font/Symbola.eot
 font/Symbola.otf
+langs/en-us.js
 
 NETWORK:
 http://graph.tk/about/
