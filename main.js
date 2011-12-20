@@ -787,7 +787,10 @@ app.init=function (){
                 }catch(ex){}
             }
         }
-        app.add("\\frac{d}{dx}\\left(sin\\left(x\\right)+log\\left(x+1\\right)\\right)");
+        //app.add("\\frac{d}{dx}\\left(sin\\left(x\\right)+log\\left(x+1\\right)\\right)");
+				app.add("m=5");
+				app.add("b=5");
+				app.add("y = m*x+b");
     }
     var div=document.createElement("div");
     var logo=new Image();

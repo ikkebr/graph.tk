@@ -23,19 +23,19 @@ var width,height;
 var gittest=1;
 
 var default_messages={
-    "standalone":"To run this app in fullscreen mode, add it to your home screen.",
-    "excanvasfail":"Explorer Canvas failed: quitting.",
-    "badbrowser":"Browser not supported",
-    "example":"Example",
-    "version":"version",
-    "type":"Type",
-    "add":"Add a new equation/graph",
-    "console":"Show Console",
-    "help":"Help Page",
-    "png":"Take Screenshot Image",
-    "showhide":"Show/Hide Graph",
-    "config":"Configure",
-    "reload":"Reset Graph"
+  "standalone":"Para executar essa aplicação em tela cheia, adicione a sua Home Sreen.",
+   "excanvasfail":"Canvas explorer falhou. Terminando aplicação.",
+   "badbrowser":"Navegador não suportado.",
+   "example":"Exemplo",
+   "version":"versão",
+   "type":"Tipo",
+   "add":"Adicionar nova equação/gráfico",
+   "console":"Exibir Console",
+   "help":"Ajugar",
+   "png":"Salvar Imagem",
+   "showhide":"Exibir/Esconder Gráfico",
+   "config":"Configurar",
+   "reload":"Reiniciar"
 };
 
 app.config={
@@ -312,7 +312,7 @@ app.ui=(function(){
     */
     var px=(mx+cx)/scalex;
     var py=(cy-my)/scaley;
-    ptd.firstChild.nodeValue="("+px.toPrecision(6)+","+py.toPrecision(6)+")";
+    ptd.firstChild.nodeValue="("+round(px.toPrecision(2))+","+round(py.toPrecision(2))+")";
   }
   function mousemove(e) {
         if(e.button != 0 || !allowdrag){return;}
@@ -706,7 +706,13 @@ app.ui=(function(){
         var b_=li.firstChild;
         var check_=li.firstChild.firstChild;
         var delete_=li.getElementsByClassName("delete")[0];
-    inputbox.appendChild(document.createTextNode(n.equation||""));
+				var slider = li.getElementsByClassName("slider")[0];
+				slider.value = n.equation.split("=")[1];
+				
+				//[var binary_op = li.getElementByClassName("textarea")[0];
+				
+				inputbox.appendChild(document.createTextNode(n.equation||""));
+						
         check_.addEventListener("change",function(e){
             for(var i=0;i<graphs.length;i++){
                 if(graphs[i].gid==n.gid){
@@ -731,7 +737,58 @@ app.ui=(function(){
     },false);
         */
         
-        delete_.addEventListener("mouseup",function(e){app.remove(li);e.stopPropagation();},false);
+    delete_.addEventListener("mouseup",function(e){app.remove(li);e.stopPropagation();},false);
+//    delete_.addEventListener("mouseup",function(e){alert(n.equation); alert(e);},false);
+		slider.addEventListener("change", function(e){
+			
+				//alert(slider.value);
+				var k = n.equation;
+				//alert(inputbox.value);
+				k = k.split("=");
+				var t = k[0] + "=" + (slider.value);
+				//alert(t);
+				n.equation = t;
+				$(inputbox).mathquill("editable");
+				inputbox.innerHTML = t;
+	//		$(inputbox).mathquill("editable");
+				$(inputbox).mathquill("redraw");
+				$(inputbox).mathquill("editable");
+				
+				for(var i=0;i<graphs.length;i++){
+            if(graphs[i].gid==n.gid){
+                var l__=$(inputbox).mathquill("latex");
+      
+                graphs[i].equation=l__;
+                try{
+                    var c=compile(l__);
+                }catch(ex){
+                     
+                    warn_.firstChild.nodeValue=app.ui.messages.error+": "+JSON.stringify(ex).toString();
+                    warn_.style.display="block";
+                    return;
+                }
+                warn_.firstChild.nodeValue="";
+                warn_.style.display="none";
+                for(var k in c){
+                    if(c.hasOwnProperty(k)){
+                        graphs[i][k]=c[k];
+                    }
+                }
+                /*
+                graphs[i].f=c.f;
+                graphs[i].plot=c.plot;
+                graphs[i].math=c.math;
+                graphs[i].xc=c.xc;
+                graphs[i].yc=c.yc;
+                graphs[i].xs=c.xs;
+                graphs[i].ys=c.ys;
+                */
+                
+                draw();
+                break;
+            }} draw();q
+			}, false);
+
         
     $(inputbox).mathquill("editable");
     //$(inputbox).mathquill("redraw");
@@ -773,6 +830,7 @@ app.ui=(function(){
                 }
             }
         });
+
     if(!n.auto){
             $(inputbox).trigger({ type: "keydown", ctrlKey: true, which: 65 });
       $(inputbox).focus();
@@ -981,12 +1039,21 @@ app.ui=(function(){
     
     var _proto_math=document.createElement("span");
     _proto_math.className="matheditor";
+
+		var _proto_slider = document.createElement("input");
+		_proto_slider.setAttribute("type", "range");
+		_proto_slider.setAttribute("min", -10);
+		_proto_slider.setAttribute("max", 10);
+		_proto_slider.className = "slider";
+		
     var _proto_del=document.createElement("span");
     _proto_del.className="delete";
         _proto.appendChild(_proto_div);
     _proto.appendChild(_proto_math);
     _proto.appendChild(_proto_del);
     _proto.appendChild(_proto_warn);
+		_proto.appendChild(_proto_slider);
+
     var buttons=document.createElement("div");
     buttons.className="buttons";
         var newfuncbtn=document.createElement("input");

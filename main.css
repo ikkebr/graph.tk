@@ -23,6 +23,15 @@ body{
     background:#eee;
 }
 li:hover .delete{visibility:visible}
+
+.slider{
+	width: 70px;
+	text-align: right;
+	position: absolute;
+	right: 50px;
+	top: 10px;
+}
+
 .delete{
     background:url(buttons.png) no-repeat;
 	width:20px;
